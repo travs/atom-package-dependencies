@@ -1,17 +1,21 @@
 {
-  "name": "atom-dependencies",
+  "name": "atom-package-dependencies",
+  "author": "https://github.com/travs/",
+  "license": "MIT",
   "version": "0.0.0",
   "description": "Installs atom-dependencies from apm if not already installed.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [
     "atom",
     "dependencies",
     "require",
     "packages"
   ],
-  "author": "https://github.com/travs/",
-  "license": "MIT"
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/travs/atom-package-dependencies"
+  },
+  "dependencies": {
+    "shelljs": "0.3.x"
+  }
 }
