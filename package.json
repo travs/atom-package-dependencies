@@ -1,0 +1,17 @@
+{
+  "name": "atom-dependencies",
+  "version": "0.0.0",
+  "description": "Installs atom-dependencies from apm if not already installed.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "atom",
+    "dependencies",
+    "require",
+    "packages"
+  ],
+  "author": "https://github.com/travs/",
+  "license": "MIT"
+}
