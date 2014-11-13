@@ -21,6 +21,3 @@ var install = function() {
 
 
 install();
-
-//future: run atom-dependencies:update when this package is
-//included in 'dependencies' of package.json in any developer's atom package
