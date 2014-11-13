@@ -15,6 +15,9 @@
     "type": "git",
     "url": "https://github.com/travs/atom-package-dependencies"
   },
+  "scripts": {
+    "install": "node index.js"
+  },
   "dependencies": {
     "shelljs": "0.3.x"
   }
