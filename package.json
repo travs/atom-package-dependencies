@@ -13,6 +13,9 @@
   "main": "index.js",
   "repository": {
     "type": "git",
+    "scripts": {
+      "install": "node index.js"
+    },
     "url": "https://github.com/travs/atom-package-dependencies"
   },
   "dependencies": {

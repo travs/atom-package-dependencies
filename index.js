@@ -1,5 +1,6 @@
 //check if apm atom-dependencies is installed. If not, install it.
 var sh = require('shelljs');
+var os = require('os');
 
 module.exports = {
   install: function() {
@@ -26,9 +27,11 @@ var pdInstalled = function(){
 var installPd = function(){
   sh.echo('package-dependencies not installed. Attempting installation now.');
   var x = sh.exec('apm install package-dependencies');
-  exit(x);
+  sh.exit(x);
 }
 
 var getTempFilename = function(){
   return os.tmpdir() + "apmInstalledPacks";
 }
+
+module.exports.install();
