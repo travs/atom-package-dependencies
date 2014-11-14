@@ -17,7 +17,3 @@ var install = function() {
   }
   sh.exec('apm install package-dependencies');
 }
-
-
-
-install();
