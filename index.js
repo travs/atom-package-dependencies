@@ -6,8 +6,8 @@ module.exports = {
   getDeps: function() {
     //getPackageDependencies(function(x){console.log(x);});
     //checkDependencies();
-    isInstalled();
-    ;
+    isInstalled('package-dependencies');
+    isInstalled('nope');
   }
 }
 
@@ -36,12 +36,26 @@ function checkDependencies(callback){
 function isInstalled(pack){
   //make sure 'installedList' is defined by calling getInstallList()
   //return !!sh.grep('^' + pack + '@', file);
+  var apm = getApmPath();
+  var searchString = '^' + pack + '@';
+  var cmdString = apm + ' ls -b | grep ' + searchString;
+  doCommand(cmdString);
+}
+
+function installPack(pack){
+  //given argument, install package from apm registry
+  var apm = getApmPath();
+  var cmdString = apm + ' install ' + pack;
+  doCommand(cmdString);
+}
+
+function doCommand(commandString, callback){
   var exec = require('child_process').exec,
     child;
-  var apm = getApmPath();
-  child = exec(apm + ' ls -b | grep "^" + pack + "@"',
-    function (error, stdout, stderr) {
-      console.log(!!stdOut);
+  child = exec(commandString,
+    callback(error, stdout, stderr) {
+      //TODO: fix this callback
+      console.log(!!stdout);
   });
 }
 
