@@ -1,37 +1,58 @@
 //check if apm atom-dependencies is installed. If not, install it.
 var sh = require('shelljs');
 var os = require('os');
+var fs = require('fs');
+var JSON = require('JSON');
+
 
 module.exports = {
-  install: function() {
-    checkApmInstalled();
-    if(!pdInstalled()){
-      installPd();
-    }
+  getDeps: function() {
+    console.log(getPackageDependencies());
   }
 }
 
-var checkApmInstalled = function(){
-  if(!sh.which('apm')){
+function checkApmInstalled(){
+  if(!sh.which('apm')) {
     sh.echo('Please make sure apm is installed and in your PATH.');
     sh.exit(1);
   }
 }
 
-var pdInstalled = function(){
+function getInstalledList(){
+  //gives path to list of installed atom packages
   var fn = getTempFilename();
   sh.exec('apm ls -b', {silent: true}).output.to(fn);
-  return !!sh.grep('^package-dependencies@', fn);
+  return fn;
 }
 
+function isInstalled(pack){
+  //make sure 'installList' is defined by calling getInstallList()
+  return !!sh.grep('^' + pack + '@', installList);
+}
+
+function getTempFilename(){
+  return os.tmpdir() + "apmInstalledPacks";
+}
+
+function getPackageJsonPath(){
+  var parentRoot = require('parent-root');
+  if(os.platform() === 'win32'){
+    return parentRoot() + '\\package.json';
+  }
+  else return parentRoot() + '/package.json';
+}
+
+function getPackageDependencies(){
+  var path = getPackageJsonPath();
+  var packages = JSON.parse(fs.readFileSync(path, 'utf8'));
+  return packages['package-dependencies'];
+}
+
+
+/* //deprecated
 var installPd = function(){
   sh.echo('package-dependencies not installed. Attempting installation now.');
   var x = sh.exec('apm install package-dependencies');
   sh.exit(x);
 }
-
-var getTempFilename = function(){
-  return os.tmpdir() + "apmInstalledPacks";
-}
-
-module.exports.install();
+*/
