@@ -17,6 +17,6 @@
   },
   "dependencies": {
     "shelljs": "0.3.x",
-    "parent-root": "0.1.x"
+    "witwip": "1.0.x"
   }
 }
