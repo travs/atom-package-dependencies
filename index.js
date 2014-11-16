@@ -46,7 +46,7 @@ function installPack(pack){
   //given argument, install package from apm registry
   var apm = getApmPath();
   var cmdString = apm + ' install ' + pack;
-  doCommand(cmdString);
+  doCommand(cmdString, callback);
 }
 
 function doCommand(commandString, callback){
@@ -56,6 +56,15 @@ function doCommand(commandString, callback){
     callback(error, stdout, stderr) {
       //TODO: fix this callback
       console.log(!!stdout);
+  });
+}
+
+function getPackageJsonPath(callback){
+  //returns path to 'package.json' in the Atom package that this is required by
+  var findPkg = require('witwip');
+  findPkg(module.parent, function(err, pkgPath, pkgData) {
+    var path = pkgPath;
+    callback(path);
   });
 }
 
@@ -77,15 +86,6 @@ var installPd = function(){
 
 function getTempFilename(){
   return os.tmpdir() + 'apmInstalledPacks';
-}
-
-function getPackageJsonPath(callback){
-  //returns path to 'package.json' in the Atom package that this is required by
-  var findPkg = require('witwip');
-  findPkg(module.parent, function(err, pkgPath, pkgData) {
-    var path = pkgPath;
-    callback(path);
-  });
 }
 
 function getInstalledList(callback){
