@@ -3,7 +3,7 @@ var os = require('os');
 var fs = require('fs');
 
 module.exports = {
-  getDeps: function() {
+  install: function() {
     getPackageDependencies(function(packs){
       for (var p in packs){
         checkInstalled(p);
@@ -24,7 +24,7 @@ function isApmInstalled(){
 }
 
 function checkInstalled(pack, callback){
-  //checks if a package is installed. Callback should check if 'installed' is true or false, and execute accordingly
+  //checks if a package is installed. If not, it installs it
   var apm = getApmPath();
   var searchString = '^' + pack + '@';
   var cmdString = apm + ' ls -b | grep ' + searchString;
