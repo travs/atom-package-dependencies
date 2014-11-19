@@ -4,10 +4,11 @@ var fs = require('fs');
 
 module.exports = {
   getDeps: function() {
-    //getPackageDependencies(function(x){console.log(x);});
-    //checkDependencies();
-    isInstalled('package-dependencies');
-    isInstalled('nope');
+    getPackageDependencies(function(packs){
+      for (var p in packs){
+        checkInstalled(p);
+      }
+    });
   }
 }
 
@@ -22,44 +23,40 @@ function isApmInstalled(){
   }
 }
 
-function getApmPath(){
-  return atom.packages.getApmPath();
-}
-
-function checkDependencies(callback){
-  var installedList = getInstalledList(
-    function(code, output){
-      console.log(output);
-    });
-}
-
-function isInstalled(pack){
-  //make sure 'installedList' is defined by calling getInstallList()
-  //return !!sh.grep('^' + pack + '@', file);
+function checkInstalled(pack, callback){
+  //checks if a package is installed. Callback should check if 'installed' is true or false, and execute accordingly
   var apm = getApmPath();
   var searchString = '^' + pack + '@';
   var cmdString = apm + ' ls -b | grep ' + searchString;
-  doCommand(cmdString);
-}
-
-function installPack(pack){
-  //given argument, install package from apm registry
-  var apm = getApmPath();
-  var cmdString = apm + ' install ' + pack;
-  doCommand(cmdString, callback);
-}
-
-function doCommand(commandString, callback){
-  var exec = require('child_process').exec,
-    child;
-  child = exec(commandString,
-    callback(error, stdout, stderr) {
-      //TODO: fix this callback
-      console.log(!!stdout);
+  doCommand(cmdString, function(err, so, se){
+    if(!so){
+      console.log(pack + ' not installed. Attempting installation now.');
+      installPack(pack);
+    }
+    else{
+      console.log(pack + ' is already installed.');
+    }
+    callback;
   });
 }
 
-function getPackageJsonPath(callback){
+function installPack(pack, callback){
+  //install package from apm registry
+  var apm = getApmPath();
+  var cmdString = apm + ' --color false install ' + pack;
+  doCommand(cmdString, function(err, so, se){
+    if(!err){
+      console.log(pack + ' installed successfully.');
+    }
+    else{
+      console.log(pack + ' install failed with error: ' + se);
+    }
+  });
+}
+
+
+
+function getPackageJSONpath(callback){
   //returns path to 'package.json' in the Atom package that this is required by
   var findPkg = require('witwip');
   findPkg(module.parent, function(err, pkgPath, pkgData) {
@@ -70,12 +67,31 @@ function getPackageJsonPath(callback){
 
 function getPackageDependencies(callback){
   //finds package that is dependant on this package, then parses JSON and gets 'package-dependencies'
-  getPackageJsonPath(function(path){
+  getPackageJSONpath(function(path){
     packages = JSON.parse(fs.readFileSync(path, 'utf8'));
     callback(packages['package-dependencies']);
   });
 }
 
+function getApmPath(){
+  return atom.packages.getApmPath();
+}
+
+function consoleOut(error, stdout, stderr){
+  //use as callback function to doCommand() to get output
+  if(error){
+    console.log('Error: \n\n' + error + '\nExit code: ' + error.code + '\nTermination signal: ' + error.signal);
+    console.log('\nStdError: \n\n' + stderr);
+  }
+  console.log('Standard output: \n\n' + stdout);
+}
+
+function doCommand(commandString, callback){
+  var exec = require('child_process').exec,
+    child;
+  if(!callback) callback = consoleOut;
+  child = exec(commandString, callback);
+}
 
 /* //deprecated
 var installPd = function(){
@@ -92,5 +108,12 @@ function getInstalledList(callback){
   //gives path to list of installed atom packages
   var fn = getTempFilename();
   var child = sh.exec(getApmPath() + ' ls -b', {silent: true, async: true}, function(code, output){console.log(output);});
+}
+
+function checkDependencies(callback){
+  var installedList = getInstalledList(
+    function(code, output){
+      console.log(output);
+    });
 }
 */
