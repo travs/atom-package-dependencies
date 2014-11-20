@@ -9,6 +9,11 @@ module.exports = {
         checkInstalled(p);
       }
     });
+  },
+  require: function (pack) {
+    var p = getPackagePath(pack);
+    if(p) return require(p.mainModulePath);
+    console.log('Error: cannot find Atom package ' + pack);
   }
 }
 
@@ -51,7 +56,7 @@ function installPack(pack, callback){
       console.log(pack + ' installed successfully.');
     }
     else{
-      console.log(pack + ' install failed with error: ' + output);
+      console.log(pack + ' install failed. Output: \n' + output);
     }
   });
 }
@@ -75,6 +80,10 @@ function getPackageDependencies(callback){
 
 function getApmPath(){
   return atom.packages.getApmPath();
+}
+
+function getPackagePath(pack){
+  return atom.packages.getLoadedPackage(pack);
 }
 
 function grepAsync(regex, text, callback){

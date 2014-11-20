@@ -6,12 +6,24 @@ Include other Atom packages that you want to be installed when making your packa
 
 ###Usage
 
+####Depending on other packages
 
 1. In the root-level `package.json`, include `"atom-package-dependencies": "latest"`
 
 2. Include an object `"package-dependencies"` and list the Atom packages your package depends on by name. Note that versioning is not yet supported, so if any version is installed, this is satisfied.
 
 3. Run the `install` function from within your package to force update (see example below).
+
+####Requiring other packages
+
+Use the apd.require function to access commands from other packages.
+
+```js
+var apd = require('atom-package-dependencies');
+
+var mdp = apd.require('markdown-preview');
+mdp.toggle();
+```
 
 ###Examples
 
@@ -43,9 +55,3 @@ apd.install();
 - This will install the listed Atom packages in the `.../.atom/packages/` directory. This means the packages are actually installed in the end-user's Atom like normal, rather than in a `node_modules` folder inside your package, and again in someone else's package.
 
 - This project is in active development and will likely be superseded by something built into Atom in the future. The purpose is simply to give package developers an easy way to ensure that other packages are installed.
-
-**TODO:**
-
-- [ ] automatically run atom-dependencies:update when this package is included in "dependencies" of `package.json`
-
-- [ ] Expose `require('pack')` for Atom packages
