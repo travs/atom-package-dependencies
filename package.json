@@ -3,7 +3,7 @@
   "author": "https://github.com/travs/",
   "license": "MIT",
   "version": "1.0.0",
-  "description": "Installs atom-dependencies from apm if not already installed.",
+  "description": "Allows Atom packages to depend on each other.",
   "keywords": [
     "atom",
     "dependencies",

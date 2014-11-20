@@ -111,36 +111,3 @@ function doExternalCommand(commandString, callback){
   if(!callback) callback = consoleOut;
   sh.exec(commandString, callback);
 }
-
-/* //deprecated
-function doCommand(commandString, callback){
-  //do command with node_process (not compatible with windows)
-  var exec = require('child_process').exec,
-    child;
-  if(!callback) callback = consoleOut;
-  child = exec(commandString, callback);
-}
-
-var installPd = function(){
-  sh.echo('package-dependencies not installed. Attempting installation now.');
-  var x = sh.exec('apm install package-dependencies');
-  sh.exit(x);
-}
-
-function getTempFilename(){
-  return os.tmpdir() + 'apmInstalledPacks';
-}
-
-function getInstalledList(callback){
-  //gives path to list of installed atom packages
-  var fn = getTempFilename();
-  var child = sh.exec(getApmPath() + ' ls -b', {silent: true, async: true}, function(code, output){console.log(output);});
-}
-
-function checkDependencies(callback){
-  var installedList = getInstalledList(
-    function(code, output){
-      console.log(output);
-    });
-}
-*/

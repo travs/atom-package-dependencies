@@ -16,7 +16,7 @@ Include other Atom packages that you want to be installed when making your packa
 
 ####Requiring other packages
 
-Use the apd.require function to access commands from other packages.
+Use the `apd.require` function to access commands from other packages.
 
 ```js
 var apd = require('atom-package-dependencies');
