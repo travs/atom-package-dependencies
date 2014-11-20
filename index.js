@@ -27,16 +27,18 @@ function checkInstalled(pack, callback){
   //checks if a package is installed. If not, it installs it
   var apm = getApmPath();
   var searchString = '^' + pack + '@';
-  var cmdString = apm + ' ls -b | grep ' + searchString;
-  doCommand(cmdString, function(err, so, se){
-    if(!so){
-      console.log(pack + ' not installed. Attempting installation now.');
-      installPack(pack);
-    }
-    else{
-      console.log(pack + ' is already installed.');
-    }
-    callback;
+  var cmdString = apm + ' ls -b';
+  doExternalCommand(cmdString, function(code, output){
+    grepAsync(searchString, output, function(result){
+      if(!result){
+        console.log(pack + ' not installed. Attempting installation now.');
+        installPack(pack);
+      }
+      else{
+        console.log(pack + ' is already installed.');
+      }
+      callback;
+    })
   });
 }
 
@@ -44,17 +46,15 @@ function installPack(pack, callback){
   //install package from apm registry
   var apm = getApmPath();
   var cmdString = apm + ' --color false install ' + pack;
-  doCommand(cmdString, function(err, so, se){
-    if(!err){
+  doExternalCommand(cmdString, function(code, output){
+    if(!code){
       console.log(pack + ' installed successfully.');
     }
     else{
-      console.log(pack + ' install failed with error: ' + se);
+      console.log(pack + ' install failed with error: ' + output);
     }
   });
 }
-
-
 
 function getPackageJSONpath(callback){
   //returns path to 'package.json' in the Atom package that this is required by
@@ -77,23 +77,41 @@ function getApmPath(){
   return atom.packages.getApmPath();
 }
 
-function consoleOut(error, stdout, stderr){
-  //use as callback function to doCommand() to get output
-  if(error){
-    console.log('Error: \n\n' + error + '\nExit code: ' + error.code + '\nTermination signal: ' + error.signal);
-    console.log('\nStdError: \n\n' + stderr);
-  }
-  console.log('Standard output: \n\n' + stdout);
+function grepAsync(regex, text, callback){
+  var tmp = require('tmp');
+  tmp.tmpName(function _tempNameGenerated(err, path) {
+    if (err) throw err;
+    fs.writeFileSync(path, text);
+    var result = sh.grep(regex, path);
+    callback(result);
+  });
 }
 
+
+function consoleOut(code, output){
+  //use as callback function to doCommand() to get output
+  if(code){
+    console.log('Error. Exited with code ' + code + '\nOutput: ' + output);
+  }
+  else{
+    console.log(output);
+  }
+}
+
+function doExternalCommand(commandString, callback){
+  if(!callback) callback = consoleOut;
+  sh.exec(commandString, callback);
+}
+
+/* //deprecated
 function doCommand(commandString, callback){
+  //do command with node_process (not compatible with windows)
   var exec = require('child_process').exec,
     child;
   if(!callback) callback = consoleOut;
   child = exec(commandString, callback);
 }
 
-/* //deprecated
 var installPd = function(){
   sh.echo('package-dependencies not installed. Attempting installation now.');
   var x = sh.exec('apm install package-dependencies');

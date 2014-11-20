@@ -46,6 +46,6 @@ apd.install();
 
 **TODO:**
 
-- [ ] run atom-dependencies:update when this package is included in "dependencies" of `package.json`
+- [ ] automatically run atom-dependencies:update when this package is included in "dependencies" of `package.json`
 
 - [ ] Expose `require('pack')` for Atom packages
