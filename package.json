@@ -2,7 +2,7 @@
   "name": "atom-package-dependencies",
   "author": "https://github.com/travs/",
   "license": "MIT",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Allows Atom packages to depend on each other.",
   "keywords": [
     "atom",
