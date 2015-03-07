@@ -3,10 +3,20 @@ var os = require('os');
 var fs = require('fs');
 
 module.exports = {
-  install: function() {
+  install: function(callback) {
+    if(!callback) callback = function(){};
     getPackageDependencies(function(packs){
+      var count = 0;
+      var packLength = Object.keys(packs || {}).length;
+      var counter = function(){
+          count++;
+          if(count == packLength){
+              callback();
+          }
+      };
+      if(!packLength) { callback(); }
       for (var p in packs){
-        checkInstalled(p);
+        checkInstalled(p,counter);
       }
     });
   },
@@ -37,12 +47,12 @@ function checkInstalled(pack, callback){
     grepAsync(searchString, output, function(result){
       if(!result){
         console.log(pack + ' not installed. Attempting installation now.');
-        installPack(pack);
+        installPack(pack, callback);
       }
       else{
         console.log(pack + ' is already installed.');
+        process.nextTick(callback);
       }
-      callback;
     })
   });
 }
@@ -54,9 +64,11 @@ function installPack(pack, callback){
   doExternalCommand(cmdString, function(code, output){
     if(!code){
       console.log(pack + ' installed successfully.');
+      callback();
     }
     else{
       console.log(pack + ' install failed. Output: \n' + output);
+      callback();
     }
   });
 }
